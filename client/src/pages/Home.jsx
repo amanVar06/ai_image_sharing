@@ -18,6 +18,33 @@ export default function Home() {
 
   const [searchText, setSearchText] = useState("");
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      try {
+        const url = "http://localhost:8080/api/v1/posts";
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const results = await response.json();
+          setAllPosts(results.data.reverse());
+          // because we want to see the newest posts at the top
+        }
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []); // when the component mounts, fetch all posts
+
   return (
     <section className="max-w-7xl mx-auto">
       <div>
@@ -52,7 +79,7 @@ export default function Home() {
               {searchText ? (
                 <RenderCards data={[]} title="No search results found" />
               ) : (
-                <RenderCards data={[]} title="No posts found" />
+                <RenderCards data={allPosts} title="No posts found" />
               )}
             </div>
           </>
