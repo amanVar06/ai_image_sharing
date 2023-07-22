@@ -8,6 +8,8 @@ import { getRandomPrompt } from "../utils";
 export default function CreatePost() {
   const navigate = useNavigate();
 
+  const BASE_URL = "http://localhost:8080/api/v1";
+
   const [form, setForm] = useState({
     name: "",
     prompt: "",
@@ -21,7 +23,7 @@ export default function CreatePost() {
     if (form.prompt) {
       try {
         setGeneratingImg(true);
-        const url = `http://localhost:8080/api/v1/dalle`;
+        const url = `${BASE_URL}/dalle`;
 
         const response = await fetch(url, {
           method: "POST",
@@ -46,6 +48,32 @@ export default function CreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (form.prompt && form.photo) {
+      setLoading(true);
+      try {
+        const url = `${BASE_URL}/posts`;
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }); // returns a promise
+
+        const data = await response.json();
+        console.log(data);
+
+        navigate("/");
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert("Please enter a prompt and generate an image");
+    }
   };
 
   const handleChange = (e) => {
