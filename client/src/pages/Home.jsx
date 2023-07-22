@@ -14,9 +14,11 @@ const RenderCards = ({ data, title }) => {
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
-  const [allPosts, setAllPosts] = useState(null);
+  const [allPosts, setAllPosts] = useState([]);
 
   const [searchText, setSearchText] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -45,6 +47,31 @@ export default function Home() {
     fetchPosts();
   }, []); // when the component mounts, fetch all posts
 
+  const handleSearchChange = (e) => {
+    clearTimeout(searchTimeout);
+    setSearchText(e.target.value);
+
+    // you can't request for every single keystroke, request sent every 500ms
+    // debouncing is a technique to limit the rate at which a function can fire
+    // so that it doesn't get invoked too many times
+    // optimizes performance
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const results = allPosts.filter((post) => {
+          return (
+            post.name.toLowerCase().includes(searchText.toLowerCase()) ||
+            post.prompt.toLowerCase().includes(searchText.toLowerCase())
+          );
+        });
+
+        console.log(results);
+
+        setSearchResults(results);
+      }, 500)
+    );
+  };
+
   return (
     <section className="max-w-7xl mx-auto">
       <div>
@@ -58,7 +85,14 @@ export default function Home() {
       </div>
 
       <div className="mt-16">
-        <FormField />
+        <FormField
+          labelName="Search Posts"
+          type="text"
+          name="search_posts"
+          placeholder="Search posts by name or prompt"
+          value={searchText}
+          handleChange={handleSearchChange}
+        />
       </div>
 
       <div className="mt-10">
@@ -77,7 +111,10 @@ export default function Home() {
 
             <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
               {searchText ? (
-                <RenderCards data={[]} title="No search results found" />
+                <RenderCards
+                  data={searchResults}
+                  title="No search results found"
+                />
               ) : (
                 <RenderCards data={allPosts} title="No posts found" />
               )}
