@@ -8,7 +8,8 @@ import { getRandomPrompt } from "../utils";
 export default function CreatePost() {
   const navigate = useNavigate();
 
-  const BASE_URL = "http://localhost:8080/api/v1";
+  // const BASE_URL = "http://localhost:8080/api/v1";
+  const BASE_URL = "https://openai-dalle-8h0d.onrender.com/api/v1";
 
   const [form, setForm] = useState({
     name: "",

@@ -20,11 +20,14 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState([]);
   const [searchTimeout, setSearchTimeout] = useState(null);
 
+  // const BASE_URL = "http://localhost:8080/api/v1";
+  const BASE_URL = "https://openai-dalle-8h0d.onrender.com/api/v1";
+
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const url = "http://localhost:8080/api/v1/posts";
+        const url = `${BASE_URL}/posts `;
         const response = await fetch(url, {
           method: "GET",
           headers: {
