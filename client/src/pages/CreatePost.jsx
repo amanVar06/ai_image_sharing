@@ -32,6 +32,7 @@ export default function CreatePost() {
         });
 
         const data = await response.json();
+        console.log(data);
         setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
       } catch (error) {
         alert(error.message);
@@ -74,7 +75,7 @@ export default function CreatePost() {
             name="name"
             placeholder="John Doe"
             value={form.name}
-            onChange={handleChange}
+            handleChange={handleChange}
           />
           <FormField
             labelName="Prompt"
@@ -82,7 +83,7 @@ export default function CreatePost() {
             name="prompt"
             placeholder="an oil pastel drawing of an annoyed cat in a spaceship"
             value={form.prompt}
-            onChange={handleChange}
+            handleChange={handleChange}
             isSurpriseMe
             handleSurpriseMe={handleSurpriseMe}
           />
